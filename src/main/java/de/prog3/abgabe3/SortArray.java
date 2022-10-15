@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.concurrent.RecursiveTask;
 
 public class SortArray<T extends Comparable<T>> extends RecursiveTask {
-    final int switchSort = 10;
+    final int SWITCH_SIZE = 10;
     private final int start;
     private final int end;
     private final T[] arr;
@@ -57,10 +57,26 @@ public class SortArray<T extends Comparable<T>> extends RecursiveTask {
         }
     }
 
+    private void insertionSort(T[] array){
+        for (int i = 1; i < array.length; i++)
+        {
+            int currentIndex = i;
+
+            // If currentIndex min 1 and the item before currenIndex is greater than currentIndex -> Swap
+            while (currentIndex > 0 && array[currentIndex - 1].compareTo(array[currentIndex]) > 0)
+            {
+                T temp = array[currentIndex];
+                array[currentIndex] = array[currentIndex - 1];
+                array[currentIndex - 1] = temp;
+                currentIndex--;
+            }
+        }
+    }
+
     @Override
     protected Object compute() {
-        if (start - end <= switchSort) {
-            //insertion sort
+        if (start - end <= SWITCH_SIZE) {
+            insertionSort(arr);
         }
         else {
             int mid = (start + end) / 2;
@@ -73,8 +89,9 @@ public class SortArray<T extends Comparable<T>> extends RecursiveTask {
 
             merge(arr, start, mid, end, comp);
         }
-        return null;
+        return arr;
     }
+
 
     public int compare(Object a, Object b) {
         return Integer.compare((Integer) a, (Integer) b);
